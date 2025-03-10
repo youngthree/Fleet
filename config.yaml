@@ -1,10 +1,28 @@
-#创建demo workspace
-kubectl apply -f https://raw.githubusercontent.com/Edgenesis/shifu/v0.64.0-rc1/pkg/k8s/crd/install/shifu_install.yml
-#创建 LwM2M 设备
-kubectl apply -f 'https://shifucloud.testing.shifu.dev/manifests/472fe418-42e2-45b0-b76f-faf458fc8982.yaml?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=shifucloud%2F20250310%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250310T023020Z&X-Amz-Expires=43200&X-Amz-SignedHeaders=host&X-Amz-Signature=e13007ed667e65179c082f854fc7e7ef7759e191bf8b974c11df88f5bf200658'
-#创建MQTT telemeryservice
-kubectl apply -f 'https://shifucloud.testing.shifu.dev/manifests/636e58a7-0939-4506-8dca-7aaa2411b293.yaml?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=shifucloud%2F20250310%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250310T023408Z&X-Amz-Expires=43200&X-Amz-SignedHeaders=host&X-Amz-Signature=96521881748867fa474352378d318f357a60d33f0f48b19a1ab5d2917fa4f8cb'
-#创建http设备
-kubectl apply -f 'https://shifucloud.testing.shifu.dev/manifests/54509aa6-06d7-4a4f-9495-19998be0c236.yaml?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=shifucloud%2F20250310%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250310T023607Z&X-Amz-Expires=43200&X-Amz-SignedHeaders=host&X-Amz-Signature=957c697eb2b2adbbc9e7bca5101e95d57985fa8d1c969fd2e5334144154a052c'
-#http设备绑定telemetry service
-kubectl apply -f 'https://shifucloud.testing.shifu.dev/manifests/54509aa6-06d7-4a4f-9495-19998be0c236.yaml?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=shifucloud%2F20250310%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250310T023658Z&X-Amz-Expires=43200&X-Amz-SignedHeaders=host&X-Amz-Signature=e18d245d2e1501bed84f61e2be0a5f297dd171153fe716864ed7c2075bdbf310' && kubectl rollout restart deployment deviceshifu-thermometer-deployment -n deviceshifu
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: git-commands-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: git-commands
+        image: alpine:latest  # 使用一个轻量级的 Alpine 镜像
+        command:
+        - /bin/sh
+        - -c
+        - |
+          # 配置 Git 用户信息
+          git config --global user.name "Your Name"
+          git config --global user.email "your_email@example.com"
+
+          # 添加所有文件到 git
+          git add .
+
+          # 提交更改
+          git commit -m "Your commit message"
+
+          # 推送更改到 GitHub
+          git push origin main
+
+      restartPolicy: Never

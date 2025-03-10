@@ -1,28 +1,17 @@
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: git-commands-job
+  name: nginx
 spec:
+  replicas: 2
+  selector:
+    matchLabels:  # 正确，应该是 map 类型
+      app: nginx
   template:
+    metadata:
+      labels:
+        app: nginx
     spec:
       containers:
-      - name: git-commands
-        image: alpine:latest  # 使用一个轻量级的 Alpine 镜像
-        command:
-        - /bin/sh
-        - -c
-        - |
-          # 配置 Git 用户信息
-          git config --global user.name "Your Name"
-          git config --global user.email "your_email@example.com"
-
-          # 添加所有文件到 git
-          git add .
-
-          # 提交更改
-          git commit -m "Your commit message"
-
-          # 推送更改到 GitHub
-          git push origin main
-
-      restartPolicy: Never
+        - name: nginx
+          image: nginx:latest

@@ -1,0 +1,230 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "OpenAPI Document",
+    "version": "1.0.0",
+    "description": "deviceShifu HTTP API for lwm2m-device"
+  },
+  "paths": {
+    "/get_value/0/ApplicationType": {
+      "get": {
+        "summary": "/3303/0/5750 The application type of the sensor or actuator as a string depending on the use case.",
+        "description": "The application type of the sensor or actuator as a string depending on the use case.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "plain/text": {
+                "example": "123"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "/3303/0/5750 The application type of the sensor or actuator as a string depending on the use case.",
+        "description": "The application type of the sensor or actuator as a string depending on the use case.",
+        "requestBody": {
+          "content": {
+            "plain/text": {
+              "example": "123"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "plain/text": {
+                "example": "Success"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_value/0/FractionalTimestamp": {
+      "get": {
+        "summary": "/3303/0/6050 Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms).",
+        "description": "Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms).",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "plain/text": {
+                "example": 1.23
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_value/0/MaxMeasuredValue": {
+      "get": {
+        "summary": "/3303/0/5602 The maximum value measured by the sensor since power ON or reset.",
+        "description": "The maximum value measured by the sensor since power ON or reset.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "plain/text": {
+                "example": 1.23
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_value/0/MaxRangeValue": {
+      "get": {
+        "summary": "/3303/0/5604 The maximum value that can be measured by the sensor.",
+        "description": "The maximum value that can be measured by the sensor.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "plain/text": {
+                "example": 1.23
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_value/0/MeasurementQualityIndicator": {
+      "get": {
+        "summary": "/3303/0/6042 Measurement quality indicator reported by a smart sensor. 0: UNCHECKED No quality checks were done because they do not exist or can not be applied. 1: REJECTED WITH CERTAINTY The measured value is invalid. 2: REJECTED WITH PROBABILITY The measured value is likely invalid. 3: ACCEPTED BUT SUSPICIOUS The measured value is likely OK. 4: ACCEPTED The measured value is OK. 5-15: Reserved for future extensions. 16-23: Vendor specific measurement quality.",
+        "description": "Measurement quality indicator reported by a smart sensor. 0: UNCHECKED No quality checks were done because they do not exist or can not be applied. 1: REJECTED WITH CERTAINTY The measured value is invalid. 2: REJECTED WITH PROBABILITY The measured value is likely invalid. 3: ACCEPTED BUT SUSPICIOUS The measured value is likely OK. 4: ACCEPTED The measured value is OK. 5-15: Reserved for future extensions. 16-23: Vendor specific measurement quality.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "plain/text": {
+                "example": 123
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_value/0/MeasurementQualityLevel": {
+      "get": {
+        "summary": "/3303/0/6049 Measurement quality level reported by a smart sensor. Quality level 100 means that the measurement has fully passed quality check algorithms. Smaller quality levels mean that quality has decreased and the measurement has only partially passed quality check algorithms. The smaller the quality level, the more caution should be used by the application when using the measurement. When the quality level is 0 it means that the measurement should certainly be rejected.",
+        "description": "Measurement quality level reported by a smart sensor. Quality level 100 means that the measurement has fully passed quality check algorithms. Smaller quality levels mean that quality has decreased and the measurement has only partially passed quality check algorithms. The smaller the quality level, the more caution should be used by the application when using the measurement. When the quality level is 0 it means that the measurement should certainly be rejected.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "plain/text": {
+                "example": 123
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_value/0/MinMeasuredValue": {
+      "get": {
+        "summary": "/3303/0/5601 The minimum value measured by the sensor since power ON or reset.",
+        "description": "The minimum value measured by the sensor since power ON or reset.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "plain/text": {
+                "example": 1.23
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_value/0/MinRangeValue": {
+      "get": {
+        "summary": "/3303/0/5603 The minimum value that can be measured by the sensor.",
+        "description": "The minimum value that can be measured by the sensor.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "plain/text": {
+                "example": 1.23
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_value/0/ResetMinandMaxMeasuredValues": {
+      "post": {
+        "summary": "/3303/0/5605 Reset the Min and Max Measured Values to Current Value.",
+        "description": "Reset the Min and Max Measured Values to Current Value.",
+        "requestBody": {
+          "content": {
+            "plain/text": {
+              "example": null
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "plain/text": {
+                "example": "Success"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_value/0/SensorUnits": {
+      "get": {
+        "summary": "/3303/0/5701 Measurement Units Definition.",
+        "description": "Measurement Units Definition.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "plain/text": {
+                "example": "123"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_value/0/SensorValue": {
+      "get": {
+        "summary": "/3303/0/5700 Last or Current Measured Value from the Sensor.",
+        "description": "Last or Current Measured Value from the Sensor.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "plain/text": {
+                "example": 1.23
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_value/0/Timestamp": {
+      "get": {
+        "summary": "/3303/0/5518 The timestamp of when the measurement was performed.",
+        "description": "The timestamp of when the measurement was performed.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "plain/text": {
+                "example": "2025-02-28T16:17:26Z"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

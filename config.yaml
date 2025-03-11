@@ -1,17 +1,113 @@
+---
+# Source: deviceshifuchart/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: deviceshifu-thermometer
+    workspace_id: 32a89252-2ec6-460e-b7d6-8cefe8a97cff
+    device_id: 54509aa6-06d7-4a4f-9495-19998be0c236
+  name: deviceshifu-thermometer-configmap
+  namespace: deviceshifu
+data:
+  driverProperties: |
+    driverSku: thermometer-HTTP-driver
+    driverImage:
+  instructions: |
+    instructions:
+      "sendsinglebit":
+      "getcontent":
+      "getcpuordercode":
+  telemetries: |
+    telemetries:
+      sendsinglebit-test:
+        properties:
+          instruction: sendsinglebit
+          pushSettings:
+            telemetryCollectionService: "test"
+      getcontent-test:
+        properties:
+          instruction: getcontent
+          pushSettings:
+            telemetryCollectionService: "test"
+      getcpuordercode-test:
+        properties:
+          instruction: getcpuordercode
+          pushSettings:
+            telemetryCollectionService: "test"
+---
+# Source: deviceshifuchart/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: deviceshifu-thermometer
+    workspace_id: 32a89252-2ec6-460e-b7d6-8cefe8a97cff
+    device_id: 54509aa6-06d7-4a4f-9495-19998be0c236
+  name: deviceshifu-thermometer-service
+  namespace: deviceshifu
+spec:
+  ports:
+  - name: http-service
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: deviceshifu-thermometer-deployment
+  type: LoadBalancer
+---
+# Source: deviceshifuchart/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
+  labels:
+    app: deviceshifu-thermometer
+    workspace_id: 32a89252-2ec6-460e-b7d6-8cefe8a97cff
+    device_id: 54509aa6-06d7-4a4f-9495-19998be0c236
+  name: deviceshifu-thermometer-deployment
+  namespace: deviceshifu
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: nginx  # 正确格式，matchLabels 是一个 map
+      app: deviceshifu-thermometer-deployment
   template:
     metadata:
       labels:
-        app: nginx
+        app: deviceshifu-thermometer-deployment
     spec:
       containers:
-        - name: nginx
-          image: nginx:latest
+        - image: edgehub/deviceshifu-http-http:v0.64.0-rc1
+          name: deviceshifu-http
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+            - name: deviceshifu-thermometer-configmap
+              mountPath: /etc/edgedevice/config
+              readOnly: true
+          env:
+          - name: EDGEDEVICE_NAME
+            value: "deviceshifu-thermometer-edgedevice"
+          - name: EDGEDEVICE_NAMESPACE
+            value: "devices"
+      volumes:
+        - name: deviceshifu-thermometer-configmap
+          configMap:
+            name: deviceshifu-thermometer-configmap
+      serviceAccountName: edgedevice-sa
+---
+# Source: deviceshifuchart/templates/edgedevice.yaml
+apiVersion: shifu.edgenesis.io/v1alpha1
+kind: EdgeDevice
+metadata:
+  labels:
+    app: deviceshifu-thermometer
+    workspace_id: 32a89252-2ec6-460e-b7d6-8cefe8a97cff
+    device_id: 54509aa6-06d7-4a4f-9495-19998be0c236
+  name: deviceshifu-thermometer-edgedevice
+  namespace: devices
+spec:
+  sku: "thermometer"
+  connection: "Ethernet"
+  address: "thermometer.devices.svc.cluster.local:11111"
+  protocol: "HTTP"

@@ -1,0 +1,170 @@
+---
+# Source: deviceshifuchart/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: deviceshifu-lwm2m-device
+    workspace_id: a4e315e2-9f35-4e1b-8d00-f55ea725b71f
+    device_id: de88a65b-7900-4bd0-b981-c47b407974ad
+  name: deviceshifu-lwm2m-device-configmap
+  namespace: deviceshifu
+data:
+  driverProperties: |
+    driverSku: lwm2m-device-LwM2M-driver
+    driverImage:
+  instructions: |
+    instructions:
+      "get_value/0/SensorValue":
+        protocolPropertyList:
+          ObjectId: "/3303/0/5700"
+          EnableObserve: "false"
+      "get_value/0/MinMeasuredValue":
+        protocolPropertyList:
+          ObjectId: "/3303/0/5601"
+          EnableObserve: "false"
+      "get_value/0/MaxMeasuredValue":
+        protocolPropertyList:
+          ObjectId: "/3303/0/5602"
+          EnableObserve: "false"
+      "get_value/0/MinRangeValue":
+        protocolPropertyList:
+          ObjectId: "/3303/0/5603"
+          EnableObserve: "false"
+      "get_value/0/MaxRangeValue":
+        protocolPropertyList:
+          ObjectId: "/3303/0/5604"
+          EnableObserve: "false"
+      "get_value/0/SensorUnits":
+        protocolPropertyList:
+          ObjectId: "/3303/0/5701"
+          EnableObserve: "false"
+      "get_value/0/ResetMinandMaxMeasuredValues":
+        protocolPropertyList:
+          ObjectId: "/3303/0/5605"
+          EnableObserve: "false"
+      "get_value/0/ApplicationType":
+        protocolPropertyList:
+          ObjectId: "/3303/0/5750"
+          EnableObserve: "false"
+      "get_value/0/Timestamp":
+        protocolPropertyList:
+          ObjectId: "/3303/0/5518"
+          EnableObserve: "false"
+      "get_value/0/FractionalTimestamp":
+        protocolPropertyList:
+          ObjectId: "/3303/0/6050"
+          EnableObserve: "false"
+      "get_value/0/MeasurementQualityIndicator":
+        protocolPropertyList:
+          ObjectId: "/3303/0/6042"
+          EnableObserve: "false"
+      "get_value/0/MeasurementQualityLevel":
+        protocolPropertyList:
+          ObjectId: "/3303/0/6049"
+          EnableObserve: "false"
+  telemetries: |
+    telemetries:
+---
+# Source: deviceshifuchart/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: deviceshifu-lwm2m-device
+    workspace_id: a4e315e2-9f35-4e1b-8d00-f55ea725b71f
+    device_id: de88a65b-7900-4bd0-b981-c47b407974ad
+  name: deviceshifu-lwm2m-device-service
+  namespace: deviceshifu
+spec:
+  ports:
+  - name: http-service
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  - name: lwm2m-coap
+    port: 5683
+    protocol: UDP
+    targetPort: 5683
+  - name: lwm2m-coaps
+    port: 5684
+    protocol: UDP
+    targetPort: 5684
+  selector:
+    app: deviceshifu-lwm2m-device-deployment
+  type: NodePort
+---
+# Source: deviceshifuchart/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: deviceshifu-lwm2m-device
+    workspace_id: a4e315e2-9f35-4e1b-8d00-f55ea725b71f
+    device_id: de88a65b-7900-4bd0-b981-c47b407974ad
+  name: deviceshifu-lwm2m-device-deployment
+  namespace: deviceshifu
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deviceshifu-lwm2m-device-deployment
+  template:
+    metadata:
+      labels:
+        app: deviceshifu-lwm2m-device-deployment
+    spec:
+      containers:
+        - image: edgehub/deviceshifu-http-lwm2m:v0.64.0-rc1
+          name: deviceshifu-lwm2m
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+            - name: deviceshifu-lwm2m-device-configmap
+              mountPath: /etc/edgedevice/config
+              readOnly: true
+          env:
+          - name: EDGEDEVICE_NAME
+            value: "deviceshifu-lwm2m-device-edgedevice"
+          - name: EDGEDEVICE_NAMESPACE
+            value: "devices"
+      volumes:
+        - name: deviceshifu-lwm2m-device-configmap
+          configMap:
+            name: deviceshifu-lwm2m-device-configmap
+      serviceAccountName: edgedevice-sa
+---
+# Source: deviceshifuchart/templates/edgedevice.yaml
+apiVersion: shifu.edgenesis.io/v1alpha1
+kind: EdgeDevice
+metadata:
+  labels:
+    app: deviceshifu-lwm2m-device
+    workspace_id: a4e315e2-9f35-4e1b-8d00-f55ea725b71f
+    device_id: de88a65b-7900-4bd0-b981-c47b407974ad
+  name: deviceshifu-lwm2m-device-edgedevice
+  namespace: devices
+spec:
+  sku: "lwm2m-device"
+  connection: "Ethernet"
+  address: ""
+  protocol: "LwM2M"
+  protocolSettings:
+    LwM2MSetting:
+      cipherSuites:
+      - TLS_ECDHE_ECDSA_WITH_AES_128_CCM
+      - TLS_ECDHE_ECDSA_WITH_AES_128_CCM
+      - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+      - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+      - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+      - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+      - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
+      - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+      - TLS_PSK_WITH_AES_128_CCM
+      - TLS_PSK_WITH_AES_128_CCM_8
+      - TLS_PSK_WITH_AES_256_CCM_8
+      - TLS_PSK_WITH_AES_128_GCM_SHA256
+      - TLS_PSK_WITH_AES_128_CBC_SHA256
+      - TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA256
+      endpointName: shifu
+      securityMode: None
